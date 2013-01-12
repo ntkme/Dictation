@@ -1,4 +1,4 @@
-Multilingual Dictation
-======================
+Dictation.app
+=============
 
-Synchronize OS X dictation language with input method language. Just like what iOS did.
+The missing frontend for dictation in OS X Mountain Lion. Synchronize OS X dictation language with input method language. Just like iOS' behavior.
