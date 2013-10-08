@@ -9,6 +9,7 @@
 #import "AppDelegate.h"
 #import "InputMethodManager.h"
 #import "DictationManager.h"
+#import "MasterDictationManager.h"
 #import "LocaleManager.h"
 #import "LoginItem.h"
 
@@ -86,6 +87,13 @@ static NSString *const kAppMenuItemLanguage = @"Language";
 
 - (void)awakeFromNib
 {
+    NSString *currentSystemVersion = [[NSDictionary dictionaryWithContentsOfFile:@"/System/Library/CoreServices/SystemVersion.plist"] objectForKey:@"ProductVersion"];
+    if ([currentSystemVersion compare:@"10.9" options:NSNumericSearch] != NSOrderedAscending) {
+        DictationManagerMetaClass = objc_allocateClassPair([MasterDictationManager class], "DictationManagerMetaClass", 0);
+    } else {
+        DictationManagerMetaClass = objc_allocateClassPair([DictationManager class], "DictationManagerMetaClass", 0);
+    }
+
     [openAtLoginMenuItem bind:@"value"
                      toObject:[LoginItem loginItemWithBundleIdentifier:@"me.ntk.Dictation-Login-Helper"]
                   withKeyPath:@"self.enabled"
@@ -131,7 +139,7 @@ static NSString *const kAppMenuItemLanguage = @"Language";
                                                       object:nil
                                                        queue:[NSOperationQueue mainQueue]
                                                   usingBlock:^(NSNotification *aNotification) {
-                                                      if ([DictationManager isEnabled]) {
+                                                      if ([DictationManagerMetaClass isEnabled]) {
                                                           NSString *selectedInputMethodLanguage = [InputMethodManager language];
                                                           if (![[InputMethodManager bundleIdentifier] isEqualToString:kDictationIMBundleIdentifier] &&
                                                               ![selectedInputMethodLanguage isEqualToString:lastSelectedInputMethodLanguage]) {
@@ -149,9 +157,9 @@ static NSString *const kAppMenuItemLanguage = @"Language";
                                                                   dictationLocaleIdentifier = [[[NSUserDefaults standardUserDefaults] arrayForKey:kAppUserDefaultDictationLocaleIdentifiers] objectAtIndex:0];
                                                               }
 
-                                                              [DictationManager setLocaleIdentifier:[LocaleManager canonicalLocaleIdentifierFromString:dictationLocaleIdentifier
+                                                              [DictationManagerMetaClass setLocaleIdentifier:[LocaleManager canonicalLocaleIdentifierFromString:dictationLocaleIdentifier
                                                                                                                                          forComponents:@[NSLocaleLanguageCode, NSLocaleCountryCode]]];
-                                                              [DictationManager terminate];
+                                                              [DictationManagerMetaClass terminate];
                                                           }
                                                       }
                                                       [self setStatusItem];
@@ -168,16 +176,16 @@ static NSString *const kAppMenuItemLanguage = @"Language";
         [statusItem setHighlightMode:YES];
         [statusItem setMenu:mainMenu];
     }
-    if ([DictationManager isEnabled]) {
+    if ([DictationManagerMetaClass isEnabled]) {
         [statusItem setImage:[NSImage imageNamed:@"StatusBarIcon"]];
         [statusItem setAlternateImage:[NSImage imageNamed:@"StatusBarIconAlternate"]];
     } else {
         [statusItem setImage:[NSImage imageNamed:@"StatusBarIconOff"]];
         [statusItem setAlternateImage:[NSImage imageNamed:@"StatusBarIconOffAlternate"]];
     }
-    if ([DictationManager isEnabled] && [[NSUserDefaults standardUserDefaults] boolForKey:kAppUserDefaultDictationLanguageInStatusbar]) {
+    if ([DictationManagerMetaClass isEnabled] && [[NSUserDefaults standardUserDefaults] boolForKey:kAppUserDefaultDictationLanguageInStatusbar]) {
         [statusItem setAttributedTitle:[[NSAttributedString alloc] initWithString:[[NSLocale currentLocale] displayNameForKey:NSLocaleIdentifier
-                                                                                                                        value:[DictationManager localeIdentifier]]
+                                                                                                                        value:[DictationManagerMetaClass localeIdentifier]]
                                                                        attributes:@{
                                                               NSFontAttributeName:[NSFont systemFontOfSize:11]
                                         }]];

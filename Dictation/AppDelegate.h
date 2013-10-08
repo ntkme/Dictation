@@ -7,8 +7,10 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import <objc/runtime.h>
 
 @interface AppDelegate : NSObject <NSApplicationDelegate, NSMenuDelegate> {
+    Class DictationManagerMetaClass;
     IBOutlet NSMenu *mainMenu;
     IBOutlet NSMenuItem *showDictationLanguageInStatusbarMenuItem;
     IBOutlet NSMenuItem *hideDictationLanguageInStatusbarMenuItem;

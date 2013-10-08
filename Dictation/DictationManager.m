@@ -14,6 +14,15 @@ static NSString *const kDictationIMIntroMessagePresented = @"DictationIMIntroMes
 static NSString *const kDictationIMLocaleIdentifier = @"DictationIMLocaleIdentifier";
 static NSString *const kDictationIMCanAutoEnable = @"AppleIronwoodCanAutoEnable";
 
+@interface DictationManager ()
+
++ (NSDictionary *)persistentDomain;
++ (void)setPersistentDomain:(NSDictionary *)aDictionary;
++ (void)addEntriesToPersistentDomainFromDictionary:(NSDictionary *)aDictionary;
+
+@end
+
+
 @implementation DictationManager
 
 + (NSDictionary *)persistentDomain
