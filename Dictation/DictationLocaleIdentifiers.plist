@@ -4,6 +4,7 @@
 <dict>
 	<key>LocaleIdentifiers</key>
 	<array>
+		<string>ru_RU</string>
 		<string>de_DE</string>
 		<string>de_CH</string>
 		<string>en_US</string>
